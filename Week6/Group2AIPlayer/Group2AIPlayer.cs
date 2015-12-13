@@ -243,6 +243,7 @@ namespace Gsd311.Week6.Group2
             }
 
             Random rand = new Random();
+            //This is so multiple instances will get different random numbers.
             Thread.Sleep(20);
 
             if (rand.NextDouble() >= 0.5)
