@@ -14,6 +14,13 @@ namespace Gsd311.Week6.Group2
         Stack<Position> positionsToAttack;
         List<Ship> shipsSunk;
 
+
+        /// <summary>
+        /// The number of times our ships have been hit by this opponent, lower values indicate player
+        /// has been 'nice' to us.
+        /// </summary>
+        int niceLevel;
+
         internal OpponentData(int index)
         {
             Index = index;
@@ -22,9 +29,21 @@ namespace Gsd311.Week6.Group2
         }
 
         /// <summary>
-        /// Adds a position to attack to the stack.
+        /// Processes a result pertaining to  this opponent.
         /// </summary>
-        internal void AddPosition()
+        /// <param name="result">A result pertaining to this opponent</param>
+        internal void ProcessResult(AttackResult result)
+        {
+            if (result.PlayerIndex != Index)
+                throw new ArgumentException("Result does not apply to this opponent");
+
+            
+        }
+        /// <summary>
+        /// Adds positions to attack to the stack, based on the position passed.
+        /// </summary>
+        /// <param name="position">A position which was a hit.</param>
+        private void ProcessResult(Position position)
         {
             throw new NotImplementedException();
         }
@@ -34,26 +53,17 @@ namespace Gsd311.Week6.Group2
 
         }
 
+       
         /// <summary>
-        /// Returns whether there are any positions left in stack to attack.
+        /// Checks to see if there are positions to attack and sets its parameter if so.
         /// </summary>
-        /// <returns></returns>
-        internal bool HasNextAttackPosition()
+        /// <param name="position">The posiion to set</param>
+        /// <returns>Whether the position was set.</returns>
+        internal bool NextAttackPosition(ref Position position)
         {
             throw new NotImplementedException();
         }
 
-        /// <summary>
-        /// This will return the next position to attack by popping the stack. It will need to be checked for validity against other game
-        /// conditions from the outside (whether the AI will be attacking it's own ship, whether the Position has already been
-        /// attacked, etc.
-        /// </summary>
-        /// <returns></returns>
-        internal Position NextAttackPosition()
-        {
-
-            throw new NotImplementedException();
-        }
 
         /// <summary>
         ///  Returns whether the player has been eliminated (battleship has been sunk)
