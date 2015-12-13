@@ -84,7 +84,7 @@ namespace Gsd311.Week6.Group2
         /// If our last potential position is the same as this one, we need to accept it regardless, otherwise
         /// we could be in an infinite loop.
         /// </summary>
-        /// <param name="result"></param>
+        /// <param name="potenial">The Position to check.</param>
         /// <returns>Whether we should attack it.</returns>
         private bool CheckFriendly(Position potential)
         {
