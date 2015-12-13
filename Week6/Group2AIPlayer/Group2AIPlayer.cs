@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Week6;
 
@@ -241,7 +242,8 @@ namespace Gsd311.Week6.Group2
                 availableColumns.Add(b);
             }
 
-            Random rand = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
+            Random rand = new Random();
+            Thread.Sleep(20);
 
             if (rand.NextDouble() >= 0.5)
 
