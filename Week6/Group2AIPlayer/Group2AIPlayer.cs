@@ -211,22 +211,64 @@ namespace Gsd311.Week6.Group2
             myShips = ships;
 
             opponentData = new Dictionary<int, OpponentData>();
+            InitPositionsAttacked(gridSize);
+            PlaceShipsRandomly(gridSize);
+        }
+
+        private void InitPositionsAttacked(int gridSize)
+        {
             positionsAttacked = new Position[gridSize, gridSize];
-            for(int i = 0; i < gridSize; ++i)
+            for (int i = 0; i < gridSize; ++i)
             {
                 for (int j = 0; j < gridSize; ++j)
                 {
                     positionsAttacked[i, j] = new Position(i, j);
                 }
             }
-            //PlaceShipsRandomly();
-            PlaceShipsDumbly();
         }
 
        
-        private void PlaceShipsRandomly()
+        private void PlaceShipsRandomly(int gridSize)
         {
-            throw new NotImplementedException();
+            var availableRows = new List<int>();
+            for (int a = 0; a < gridSize; a++)
+            {
+                availableRows.Add(a);
+            }
+            var availableColumns = new List<int>();
+            for (int b = 0; b < gridSize; b++)
+            {
+                availableColumns.Add(b);
+            }
+
+            Random rand = new Random();
+
+            if (rand.NextDouble() >= 0.5)
+
+                foreach (var ship in myShips._ships)
+                {
+
+                    var y = availableRows[rand.Next(availableRows.Count)];
+                    availableRows.Remove(y);
+
+
+
+                    var x = rand.Next(gridSize - ship.Length);
+                    ship.Place(new Position(x, y), Direction.Horizontal);
+
+
+                }
+            else
+                foreach (var ship in myShips._ships)
+                {
+
+                    var x = availableColumns[rand.Next(availableColumns.Count)];
+                    availableColumns.Remove(x);
+
+
+                    var y = rand.Next(gridSize - ship.Length);
+                    ship.Place(new Position(x, y), Direction.Vertical);
+                }
         }
         private void PlaceShipsDumbly()
         {

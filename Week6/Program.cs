@@ -14,25 +14,10 @@ namespace Week6
 
 
             List<IPlayer> players = new List<IPlayer>();
-            /*
-            players.Add(new DumbPlayer("Dumb 1"));
-            players.Add(new DumbPlayer("Dumb 2"));
-            players.Add(new DumbPlayer("Dumb 3"));
-            players.Add(new RandomPlayer("Random 1"));
-            players.Add(new RandomPlayer("Random 2"));
-            players.Add(new RandomPlayer("Random 3"));
-            players.Add(new RandomPlayer("Random 4"));
-            players.Add(new Group2AIPlayer());*/
 
+            for (int i = 1; i <= 8; ++i)
+                players.Add(new Group2AIPlayer(i.ToString()));
             
-            players.Add(new Group2AIPlayer("0"));
-            players.Add(new Group2AIPlayer("1"));
-            players.Add(new Group2AIPlayer("2"));
-            players.Add(new Group2AIPlayer("3"));
-            players.Add(new Group2AIPlayer("4"));
-            players.Add(new Group2AIPlayer("5"));
-            
-
             MultiPlayerBattleShip game = new MultiPlayerBattleShip(players);
             game.Play(PlayMode.Pause);
         }
