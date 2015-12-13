@@ -10,7 +10,7 @@ namespace Gsd311.Week6.Group2
     static class Extension
     {
         /// <summary>
-        /// Use and extension method for this, so we don't edit Position and change the test harness setup.
+        /// Use an extension method for this, so we don't edit Position and change the test harness setup.
         /// </summary>
         /// <param name="thisOne"></param>
         /// <param name="other"></param>
