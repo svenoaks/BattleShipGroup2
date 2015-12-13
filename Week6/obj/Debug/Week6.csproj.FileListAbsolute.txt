@@ -4,3 +4,9 @@ C:\Users\sveno\Documents\Visual Studio 2015\Projects\BattleShip Test\Week6\bin\D
 C:\Users\sveno\Documents\Visual Studio 2015\Projects\BattleShip Test\Week6\obj\Debug\Week6.csprojResolveAssemblyReference.cache
 C:\Users\sveno\Documents\Visual Studio 2015\Projects\BattleShip Test\Week6\obj\Debug\Week6.exe
 C:\Users\sveno\Documents\Visual Studio 2015\Projects\BattleShip Test\Week6\obj\Debug\Week6.pdb
+C:\Users\sveno\Documents\Visual Studio 2015\Projects\BattleShipTest\Week6\bin\Debug\Week6.exe.config
+C:\Users\sveno\Documents\Visual Studio 2015\Projects\BattleShipTest\Week6\obj\Debug\Week6.exe
+C:\Users\sveno\Documents\Visual Studio 2015\Projects\BattleShipTest\Week6\obj\Debug\Week6.pdb
+C:\Users\sveno\Documents\Visual Studio 2015\Projects\BattleShipTest\Week6\bin\Debug\Week6.exe
+C:\Users\sveno\Documents\Visual Studio 2015\Projects\BattleShipTest\Week6\bin\Debug\Week6.pdb
+C:\Users\sveno\Documents\Visual Studio 2015\Projects\BattleShipTest\Week6\obj\Debug\Week6.csprojResolveAssemblyReference.cache

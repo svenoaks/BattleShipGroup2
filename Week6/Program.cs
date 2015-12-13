@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Gsd311.Week6.Group2;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,7 +24,7 @@ namespace Week6
             players.Add(new RandomPlayer("Random 5"));
 
             //Your code here
-            //players.Add(new GroupNPlayer());
+            players.Add(new Group2AIPlayer());
 
             MultiPlayerBattleShip game = new MultiPlayerBattleShip(players);
             game.Play(PlayMode.Pause);
