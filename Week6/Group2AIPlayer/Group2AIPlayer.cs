@@ -35,7 +35,7 @@ namespace Gsd311.Week6.Group2
         /// <summary>
         /// All the positions already attacked, we don't want to attack those again ever.
         /// </summary>
-        bool[,] positionsAttacked;
+        Position[,] positionsAttacked;
 
         //Our ships.
         Ships myShips;
@@ -104,11 +104,38 @@ namespace Gsd311.Week6.Group2
         {
             List<Ship> ships = myShips._ships;
 
-            return
-                   ships
-                   .All(ship => ship.Positions
-                   .All(position => positionsAttacked[position.X, position.Y]));
-                
+            bool nothingLeft = true;
+            for (int i = 0; i < positionsAttacked.GetLength(0); ++i)
+            {
+                for (int j = 0; j < positionsAttacked.GetLength(1); ++j)
+                {
+                    Position thePosition = positionsAttacked[i, j];
+                    if (thePosition.Hit)
+                        continue;
+                    bool onShip = true;
+                    foreach (Ship ship in ships)
+                    {
+                        foreach(Position pos in ship.Positions)
+                        {
+                            if (!pos.EqualCoordinates(thePosition))
+                            {
+                                onShip = false;
+                                goto EndShip;
+                            }
+
+                        }
+                    }
+                    EndShip:
+                    if (!onShip)
+                    {
+                        nothingLeft = false;
+                        goto End;
+                    }
+                       
+                }
+            }
+            End:
+            return nothingLeft;
         }
 
         /// <summary>
@@ -125,7 +152,7 @@ namespace Gsd311.Week6.Group2
                 int x = rnd.Next(0, positionsAttacked.GetLength(0));
                 int y = rnd.Next(0, positionsAttacked.GetLength(1));
 
-                if (!positionsAttacked[x, y])
+                if (!positionsAttacked[x, y].Hit)
                 {
                     valid = true;
                     result = new Position(x, y);
@@ -167,7 +194,7 @@ namespace Gsd311.Week6.Group2
                 }
                
                 opponentData[index].ProcessResult(result);
-                positionsAttacked[result.Position.X, result.Position.Y] = true;
+                positionsAttacked[result.Position.X, result.Position.Y].Hit = true;
 
             }
         }
@@ -184,8 +211,14 @@ namespace Gsd311.Week6.Group2
             myShips = ships;
 
             opponentData = new Dictionary<int, OpponentData>();
-            positionsAttacked = new bool[gridSize, gridSize];
-
+            positionsAttacked = new Position[gridSize, gridSize];
+            for(int i = 0; i < gridSize; ++i)
+            {
+                for (int j = 0; j < gridSize; ++j)
+                {
+                    positionsAttacked[i, j] = new Position(i, j);
+                }
+            }
             //PlaceShipsRandomly();
             PlaceShipsDumbly();
         }
