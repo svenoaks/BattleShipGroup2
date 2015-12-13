@@ -84,7 +84,7 @@ namespace Gsd311.Week6.Group2
         /// <returns>Whether we should attack it.</returns>
         private bool CheckFriendly(Position potential)
         {
-            if (NothingLeftToAttack())
+            if (NothingLeftToAttackButOwnShips())
             {
                 return true;
             }   
@@ -100,7 +100,7 @@ namespace Gsd311.Week6.Group2
             }
         }
 
-        private bool NothingLeftToAttack()
+        private bool NothingLeftToAttackButOwnShips()
         {
             List<Ship> ships = myShips._ships;
 
@@ -112,14 +112,14 @@ namespace Gsd311.Week6.Group2
                     Position thePosition = positionsAttacked[i, j];
                     if (thePosition.Hit)
                         continue;
-                    bool onShip = true;
+                    bool onShip = false;
                     foreach (Ship ship in ships)
                     {
                         foreach(Position pos in ship.Positions)
                         {
-                            if (!pos.EqualCoordinates(thePosition))
+                            if (pos.EqualCoordinates(thePosition))
                             {
-                                onShip = false;
+                                onShip = true;
                                 goto EndShip;
                             }
 
