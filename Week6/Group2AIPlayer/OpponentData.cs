@@ -43,8 +43,10 @@ namespace Gsd311.Week6.Group2
         /// Adds positions to attack to the stack, based on the position passed.
         /// </summary>
         /// <param name="position">A position which was a hit.</param>
-        private void ProcessResult(Position position)
+        private void ProcessHitPosition(Position position)
         {
+            if (!position.Hit)
+                throw new ArgumentException("This position was not hit.");
             throw new NotImplementedException();
         }
 
