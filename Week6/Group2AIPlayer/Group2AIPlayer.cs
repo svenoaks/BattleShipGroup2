@@ -37,9 +37,6 @@ namespace Gsd311.Week6.Group2
         /// </summary>
         bool[,] positionsAttacked;
 
-        //Store last position to prevent not being able to come up with a position.
-        Position lastPotentialPosition;
-
         //Our ships.
         Ships myShips;
 
@@ -71,8 +68,7 @@ namespace Gsd311.Week6.Group2
                 {
                     result = NextHuntPosition();
                 }
-                valid = CheckFriendly(result);
-                lastPotentialPosition = result;
+                valid = CheckFriendly(result);               
             }
 
             return result;
@@ -88,7 +84,7 @@ namespace Gsd311.Week6.Group2
         /// <returns>Whether we should attack it.</returns>
         private bool CheckFriendly(Position potential)
         {
-            if (lastPotentialPosition != null && lastPotentialPosition.Equals(potential))
+            if (NothingLeftToAttack())
             {
                 return true;
             }   
@@ -97,9 +93,22 @@ namespace Gsd311.Week6.Group2
                 //Avoid our own ships.
                 List<Ship> ships = myShips._ships;
 
-                return ships.All(ship => ship.Positions.All(position => !position.EqualCoordinates(potential)));
+                return ships
+                    .All(ship => ship.Positions
+                    .All(position => !position.EqualCoordinates(potential)));
 
             }
+        }
+
+        private bool NothingLeftToAttack()
+        {
+            List<Ship> ships = myShips._ships;
+
+            return
+                   ships
+                   .All(ship => ship.Positions
+                   .All(position => positionsAttacked[position.X, position.Y]));
+                
         }
 
         /// <summary>
