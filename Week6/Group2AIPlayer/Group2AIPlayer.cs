@@ -241,7 +241,7 @@ namespace Gsd311.Week6.Group2
                 availableColumns.Add(b);
             }
 
-            Random rand = new Random();
+            Random rand = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
 
             if (rand.NextDouble() >= 0.5)
 
