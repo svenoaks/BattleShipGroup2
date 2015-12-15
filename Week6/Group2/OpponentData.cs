@@ -10,20 +10,22 @@ namespace Gsd311.Week6.Group2
         /// The index of the player from AttackResult.
         /// </summary>
         internal int Index { get; }
+        internal int AgressionLevel { get; private set; }
 
         Stack<Position> positionsToAttack;
         List<Ship> shipsSunk;
+        int gridSize;
 
 
         /// <summary>
         /// The number of times our ships have been hit by this opponent, lower values indicate player
         /// has been 'nice' to us.
         /// </summary>
-        int niceLevel;
 
-        internal OpponentData(int index)
+        internal OpponentData(int index, int gridSize)
         {
             Index = index;
+            this.gridSize = gridSize;
             positionsToAttack = new Stack<Position>();
             List<Ship> shipsSunk = new List<Ship>();
         }
@@ -41,15 +43,21 @@ namespace Gsd311.Week6.Group2
         }
         /// <summary>
         /// Adds positions to attack to the stack, based on the position passed.
+        /// This will add one Position on each horizontal and vertical side of the Position at most (it needs to check gridSize, don't go out of bounds).
         /// </summary>
-        /// <param name="position">A position which was a hit.</param>
+        /// <param name="position">A position which was a hit on a ship.</param>
         private void ProcessHitPosition(Position position)
         {
             if (!position.Hit)
                 throw new ArgumentException("This position was not hit.");
+
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Adds a sunken ship to the List of sunken ships.
+        /// </summary>
+        /// <param name="ship"></param>
         internal void AddShipSunk(Ship ship)
         {
 
@@ -57,7 +65,7 @@ namespace Gsd311.Week6.Group2
 
        
         /// <summary>
-        /// Checks to see if there are positions to attack and sets its parameter if so.
+        /// Checks to see if there are Positions on the stack to attack and sets the parameter if so.
         /// </summary>
         /// <param name="position">The posiion to set</param>
         /// <returns>Whether the position was set.</returns>
@@ -70,7 +78,7 @@ namespace Gsd311.Week6.Group2
         /// <summary>
         ///  Returns whether the player has been eliminated (battleship has been sunk)
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Whether the BattleShip was sunk.</returns>
         internal bool IsEliminated()
         {
             throw new NotImplementedException();

@@ -45,8 +45,9 @@
   <ItemGroup>
     <Compile Include="DumbPlayer\DumbPlayer.cs" />
     <Compile Include="Grid.cs" />
-    <Compile Include="Group2AIPlayer\Group2AIPlayer.cs" />
-    <Compile Include="Group2AIPlayer\OpponentData.cs" />
+    <Compile Include="GridEntry.cs" />
+    <Compile Include="Group2\Group2AIPlayer.cs" />
+    <Compile Include="Group2\OpponentData.cs" />
     <Compile Include="IPlayer.cs" />
     <Compile Include="MultiPlayerBattleShip.cs" />
     <Compile Include="PlayMode.cs" />

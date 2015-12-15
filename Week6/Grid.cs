@@ -6,14 +6,21 @@ namespace Week6
 {
     public class Grid
     {
-        private readonly Ship[,] _grid;
+        private readonly GridEntry[,] _grid;
         private readonly int _gridSize;
 
         public Grid(int gridSize)
         {
             _gridSize = gridSize;
-            _grid = new Ship[gridSize,gridSize];
-           
+            _grid = new GridEntry[gridSize,gridSize];
+            //Fill the grid with empty entries marked as not hit
+            for (int x = 0; x < gridSize; x++)
+            {
+                for (int y = 0; y < gridSize; y++)
+                {
+                    _grid[x,y] = new GridEntry();
+                }
+            }
         }
 
         public void Add(Ships ships)
@@ -37,12 +44,12 @@ namespace Week6
                         throw new ArgumentException("One of the players is adding a hit ship to the game");
                     }
 
-                    if (_grid[pos.X, pos.Y] != null)
+                    if (_grid[pos.X, pos.Y].Ship != null)
                     {
                         throw new ArgumentException("One of the players has an overlapping ship");
                     }
 
-                    _grid[pos.X, pos.Y] = ship;
+                    _grid[pos.X, pos.Y].Ship = ship;
                 }
             }
         }
@@ -54,31 +61,28 @@ namespace Week6
                 for (int y = 0; y < _gridSize; y++)
                 {
                     Console.SetCursorPosition(drawX + x, drawY + y);
-                    Console.ForegroundColor = (_grid[x, y] == null) ? ConsoleColor.Gray : _grid[x, y].Color;
+                    Console.ForegroundColor = (_grid[x, y].Ship == null) ? ConsoleColor.Gray : _grid[x, y].Ship.Color;
                     //Find if this segment of the ship is hit
-                    var backGroundColor = ConsoleColor.Black;
-                    if (_grid[x, y] == null)
+                    Console.BackgroundColor = (_grid[x,y].Hit)? ConsoleColor.Red : ConsoleColor.Black;
+                    if (_grid[x, y].Ship == null)
                     {
-                        Console.BackgroundColor = ConsoleColor.Black;
                         Console.Write(".");
                     }
                     else
                     {
-
-                        foreach (var point in _grid[x, y].Positions)
-                        {
-                            if (point.X == x && point.Y == y)
-                            {
-                                backGroundColor = point.Hit ? ConsoleColor.Red : ConsoleColor.Black;
-                                break;
-                            }
-                        }
-                        Console.BackgroundColor = backGroundColor;
-
-                        Console.Write(_grid[x, y].Character);
+                        Console.Write(_grid[x, y].Ship.Character);
                     }
                 }
             }
+
+            //Reset colors
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.ForegroundColor = ConsoleColor.White;
+        }
+
+        public void Attack(Position pos)
+        {
+            _grid[pos.X, pos.Y].Hit = true;
         }
     }
 }

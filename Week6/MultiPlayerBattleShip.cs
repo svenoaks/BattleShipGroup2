@@ -16,7 +16,7 @@ namespace Week6
 
         private readonly List<IPlayer> _players;
 
-        private  List<Grid> _playerGrids;
+        private List<Grid> _playerGrids;
         private List<Ships> _playerShips;
          
         private List<IPlayer> currentPlayers;
@@ -117,6 +117,11 @@ namespace Week6
                     if (_playerShips[player.Index].SunkMyBattleShip)
                     {
                         currentPlayers.Remove(player);
+                        //We never want to remvoe all the players... 
+                        if (currentPlayers.Count == 1)
+                        {
+                            break;
+                        }
                     }
                 }
 
@@ -152,6 +157,13 @@ namespace Week6
             foreach (var player in currentPlayers)
             {
                 var result = _playerShips[player.Index].Attack(pos);
+
+                //Mark attacks on the grid
+                foreach (var grid in _playerGrids)
+                {
+                    grid.Attack(pos);
+                }
+
                 result.PlayerIndex = player.Index;
                 results.Add(result);
             }

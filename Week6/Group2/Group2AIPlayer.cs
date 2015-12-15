@@ -34,7 +34,7 @@ namespace Gsd311.Week6.Group2
         Dictionary<int, OpponentData> opponentData;
 
         /// <summary>
-        /// All the positions already attacked, we don't want to attack those again ever.
+        /// All the positions already attacked, we don't want to attack those again ever (maybe in a more advanced AI we would).
         /// </summary>
         Position[,] positionsAttacked;
 
@@ -47,10 +47,9 @@ namespace Gsd311.Week6.Group2
 
         /// <summary>
         /// General algorithm:
-        /// 1. Iterate through opponent data for ships which have positions to be attacked and retrieve one.
-        /// 2. Check if this position has been attacked already, and this opponent is not eliminated and keep going if so.
-        /// 3. Check if the position would hit our own ships, we will probably ignore if it so.
-        /// 4. If no opponents have positions to attack, generate a random position to attack that hasn't been attacked yet.
+        /// 1. Try to find a Position which reprents a likely continuation of enemy ships, from our OpponentData.
+        /// 2. If no such Position exists, fire at a random Position.
+        /// 3. Check if the position would hit our own ships, we will try another Position unless there is no other Position that has yet been attacked.
         /// 
         /// </summary>
         /// <returns>Our next attack.</returns>
@@ -69,7 +68,7 @@ namespace Gsd311.Week6.Group2
                 {
                     result = NextHuntPosition();
                 }
-                valid = CheckFriendly(result);               
+                valid = ValidatePosition(result);               
             }
 
             return result;
@@ -77,13 +76,12 @@ namespace Gsd311.Week6.Group2
         }
 
         /// <summary>
-        /// We need to check if our ships are at the potential position.
-        /// If our last potential position is the same as this one, we need to accept it regardless, otherwise
-        /// we could be in an infinite loop.
+        /// Check if there is any of our Ships at the passed Position.
+        /// Will return true if there is nothing left to attack but our where our own Ships lie.
         /// </summary>
-        /// <param name="potenial">The Position to check.</param>
+        /// <param name="potential">The Position to check.</param>
         /// <returns>Whether we should attack it.</returns>
-        private bool CheckFriendly(Position potential)
+        private bool ValidatePosition(Position potential)
         {
             if (NothingLeftToAttackButOwnShips())
             {
@@ -101,48 +99,28 @@ namespace Gsd311.Week6.Group2
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>Whether there are any Positions that have not been attacked where our own Ships don't lie.</returns>
         private bool NothingLeftToAttackButOwnShips()
         {
-            List<Ship> ships = myShips._ships;
+            var shipPositions = myShips._ships.SelectMany(ship => ship.Positions);
 
-            bool nothingLeft = true;
-            for (int i = 0; i < positionsAttacked.GetLength(0); ++i)
-            {
-                for (int j = 0; j < positionsAttacked.GetLength(1); ++j)
-                {
-                    Position thePosition = positionsAttacked[i, j];
-                    if (thePosition.Hit)
-                        continue;
-                    bool onShip = false;
-                    foreach (Ship ship in ships)
-                    {
-                        foreach(Position pos in ship.Positions)
-                        {
-                            if (pos.EqualCoordinates(thePosition))
-                            {
-                                onShip = true;
-                                goto EndShip;
-                            }
+            var allPositions = positionsAttacked.Cast<Position>();
 
-                        }
-                    }
-                    EndShip:
-                    if (!onShip)
-                    {
-                        nothingLeft = false;
-                        goto End;
-                    }
-                       
-                }
-            }
-            End:
-            return nothingLeft;
-        }
+            var unattackedOpenPositions = allPositions
+                .Where(position => shipPositions
+                .All(pos => !pos.EqualCoordinates(position)) && !position.Hit);
+
+            return unattackedOpenPositions.Count() == 0;
+
+          }
 
         /// <summary>
         /// Hunt mode.
         /// </summary>
-        /// <returns>The Nex</returns>
+        /// <returns>A random Position not yet attacked.</returns>
         private Position NextHuntPosition()
         {
             Random rnd = new Random();
@@ -167,8 +145,10 @@ namespace Gsd311.Week6.Group2
 
         /// <summary>
         /// Target mode.
+        /// This method should query the OpponentData's and determine a suitable Position.
+        /// It should attack only Oponent's who have not been eliminated, and will favor opponent's with a higher AgressionLevel.
         /// </summary>
-        /// <param name="toAttack">Set this position to the position to attack.</param>
+        /// <param name="toAttack">Set this Position reference to the position to attack.</param>
         /// <returns>Whether there was a position to attack or not.</returns>
         private bool NextTargetPosition(ref Position toAttack)
         {
@@ -179,11 +159,10 @@ namespace Gsd311.Week6.Group2
         
 
         /// <summary>
-        /// General algorithm:
-        /// Add the new positions to attack to our opponentData if there was a hit or sunk, and the positions to our
-        /// positions attacked.
+        /// Sends an AttackResult to be processed by the corresponding OpponentData.
+        /// Records all Positions that have already been attacked.
         /// </summary>
-        /// <param name="results"></param>
+        /// <param name="results">The passed in results.</param>
         public void SetAttackResults(List<AttackResult> results)
         {
             foreach (var result in results)
@@ -191,7 +170,7 @@ namespace Gsd311.Week6.Group2
                 int index = result.PlayerIndex;
                 if (!opponentData.ContainsKey(index))
                 {
-                    opponentData.Add(index, new OpponentData(index));
+                    opponentData.Add(index, new OpponentData(index, positionsAttacked.GetLength(0)));
                 }
                
                 opponentData[index].ProcessResult(result);
