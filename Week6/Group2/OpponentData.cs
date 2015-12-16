@@ -13,7 +13,7 @@ namespace Gsd311.Week6.Group2
         internal int AgressionLevel { get; private set; }
 
         Stack<Position> positionsToAttack;
-        List<Ship> shipsSunk;
+        List<ShipTypes> shipsSunk;
         int gridSize;
 
 
@@ -27,7 +27,7 @@ namespace Gsd311.Week6.Group2
             Index = index;
             this.gridSize = gridSize;
             positionsToAttack = new Stack<Position>();
-            List<Ship> shipsSunk = new List<Ship>();
+            shipsSunk = new List<ShipTypes>();
         }
 
         /// <summary>
@@ -39,7 +39,18 @@ namespace Gsd311.Week6.Group2
             if (result.PlayerIndex != Index)
                 throw new ArgumentException("Result does not apply to this opponent");
 
-            
+            if (result.ResultType == AttackResultType.Hit)
+            {
+                ProcessHitPosition(result.Position);
+            }
+
+            if (result.SunkShip != ShipTypes.None)
+            {
+                AddShipSunk(result.SunkShip);
+            }
+
+
+
         }
         /// <summary>
         /// Adds positions to attack to the stack, based on the position passed.
@@ -48,22 +59,52 @@ namespace Gsd311.Week6.Group2
         /// <param name="position">A position which was a hit on a ship.</param>
         private void ProcessHitPosition(Position position)
         {
-            if (!position.Hit)
-                throw new ArgumentException("This position was not hit.");
+            Position temp = new Position(0, 0);
 
-            throw new NotImplementedException();
+            if (((position.X + 1) >= 0) && ((position.X + 1) < gridSize) && ((position.Y) >= 0) && ((position.Y) < gridSize))
+            {
+                temp.X = position.X + 1;
+                temp.Y = position.Y;
+                positionsToAttack.Push(temp);
+
+            }
+
+            if (((position.X - 1) >= 0) && ((position.X - 1) < gridSize) && ((position.Y) >= 0) && ((position.Y) < gridSize))
+            {
+                temp.X = position.X - 1;
+                temp.Y = position.Y;
+                positionsToAttack.Push(temp);
+
+            }
+
+            if (((position.X) >= 0) && ((position.X) < gridSize) && ((position.Y + 1) >= 0) && ((position.Y + 1) < gridSize))
+            {
+                temp.X = position.X;
+                temp.Y = position.Y + 1;
+                positionsToAttack.Push(temp);
+
+            }
+
+            if (((position.X) >= 0) && ((position.X) < gridSize) && ((position.Y - 1) >= 0) && ((position.Y - 1) < gridSize))
+            {
+                temp.X = position.X;
+                temp.Y = position.Y - 1;
+                positionsToAttack.Push(temp);
+
+            }
+
         }
 
         /// <summary>
         /// Adds a sunken ship to the List of sunken ships.
         /// </summary>
         /// <param name="ship"></param>
-        internal void AddShipSunk(Ship ship)
+        private void AddShipSunk(ShipTypes ship)
         {
-
+            shipsSunk.Add(ship);
         }
 
-       
+
         /// <summary>
         /// Checks to see if there are Positions on the stack to attack and sets the parameter if so.
         /// </summary>
@@ -71,7 +112,15 @@ namespace Gsd311.Week6.Group2
         /// <returns>Whether the position was set.</returns>
         internal bool NextAttackPosition(ref Position position)
         {
-            throw new NotImplementedException();
+            if (positionsToAttack.Count == 0)
+            {
+                return false;
+            }
+            else
+            {
+                position = positionsToAttack.Pop();
+                return true;
+            }
         }
 
 
@@ -81,7 +130,20 @@ namespace Gsd311.Week6.Group2
         /// <returns>Whether the BattleShip was sunk.</returns>
         internal bool IsEliminated()
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+            bool temp = false;
+
+            foreach (ShipTypes shipType in shipsSunk)
+            {
+                if (shipType == ShipTypes.Battleship)
+                {
+                    temp = true;
+                    break;
+                }
+            }
+
+            return temp;
+
         }
     }
 }

@@ -37,13 +37,14 @@ namespace Gsd311.Week6.Group2
         /// All the positions already attacked, we don't want to attack those again ever (maybe in a more advanced AI we would).
         /// </summary>
         Position[,] positionsAttacked;
+        List<Position> positionsWithHitShips;
 
         //Our ships.
         Ships myShips;
 
         public Group2AIPlayer() { Name = "Group 2"; }
         public Group2AIPlayer(string name) { Name = name; }
-       
+
 
         /// <summary>
         /// General algorithm:
@@ -58,7 +59,7 @@ namespace Gsd311.Week6.Group2
             Position result = null;
             bool valid = false;
 
-            while(!valid)
+            while (!valid)
             {
                 if (NextTargetPosition(ref result))
                 {
@@ -68,35 +69,37 @@ namespace Gsd311.Week6.Group2
                 {
                     result = NextHuntPosition();
                 }
-                valid = ValidatePosition(result);               
+                valid = CheckFriendly(result);
+                if (!valid && NothingLeftToAttackButOwnShips())
+                {
+                    //Attacking any unattacked positions would result in attacking our own ships, attack previously attacked Ship Hit position instead
+                    //to screw up enemy AI.
+                    Random rand = new Random();
+                    int toAttack;
+                    if (positionsWithHitShips.Count > 0)
+                    {
+                        toAttack = rand.Next(0, positionsWithHitShips.Count);
+                    }
+                    valid = true;
+                }
             }
 
             return result;
-            
+
         }
 
         /// <summary>
         /// Check if there is any of our Ships at the passed Position.
-        /// Will return true if there is nothing left to attack but our where our own Ships lie.
         /// </summary>
         /// <param name="potential">The Position to check.</param>
-        /// <returns>Whether we should attack it.</returns>
-        private bool ValidatePosition(Position potential)
+        /// <returns></returns>
+        private bool CheckFriendly(Position potential)
         {
-            if (NothingLeftToAttackButOwnShips())
-            {
-                return true;
-            }   
-            else
-            {
-                //Avoid our own ships.
-                List<Ship> ships = myShips._ships;
+            List<Ship> ships = myShips._ships;
 
-                return ships
-                    .All(ship => ship.Positions
-                    .All(position => !position.EqualCoordinates(potential)));
-
-            }
+            return ships
+                .All(ship => ship.Positions
+                .All(position => !position.EqualCoordinates(potential)));
         }
 
         /// <summary>
@@ -115,7 +118,7 @@ namespace Gsd311.Week6.Group2
 
             return unattackedOpenPositions.Count() == 0;
 
-          }
+        }
 
         /// <summary>
         /// Hunt mode.
@@ -136,7 +139,7 @@ namespace Gsd311.Week6.Group2
                     valid = true;
                     result = new Position(x, y);
                 }
-                   
+
             }
             return result;
         }
@@ -152,11 +155,19 @@ namespace Gsd311.Week6.Group2
         /// <returns>Whether there was a position to attack or not.</returns>
         private bool NextTargetPosition(ref Position toAttack)
         {
+            foreach (var opponent in opponentData.Values)
+            {
+                if(opponent.NextAttackPosition(ref toAttack) && !opponent.IsEliminated() &&
+                    !positionsAttacked[toAttack.X, toAttack.Y].Hit)
+                {
+                    return true;
+                }
+            }
             return false;
         }
 
 
-        
+
 
         /// <summary>
         /// Sends an AttackResult to be processed by the corresponding OpponentData.
@@ -167,15 +178,23 @@ namespace Gsd311.Week6.Group2
         {
             foreach (var result in results)
             {
-                int index = result.PlayerIndex;
-                if (!opponentData.ContainsKey(index))
+                if (result.ResultType == AttackResultType.Hit || result.ResultType == AttackResultType.Sank)
                 {
-                    opponentData.Add(index, new OpponentData(index, positionsAttacked.GetLength(0)));
+                    positionsWithHitShips.Add(result.Position);
                 }
-               
-                opponentData[index].ProcessResult(result);
-                positionsAttacked[result.Position.X, result.Position.Y].Hit = true;
+                int index = result.PlayerIndex;
 
+                //Don't track ourselves.
+                if (index != Index)
+                {
+                    if (!opponentData.ContainsKey(index))
+                    {
+                        opponentData.Add(index, new OpponentData(index, positionsAttacked.GetLength(0)));
+                    }
+
+                    opponentData[index].ProcessResult(result);
+                    positionsAttacked[result.Position.X, result.Position.Y].Hit = true;
+                }
             }
         }
 
@@ -191,6 +210,7 @@ namespace Gsd311.Week6.Group2
             myShips = ships;
 
             opponentData = new Dictionary<int, OpponentData>();
+            positionsWithHitShips = new List<Position>();
             InitPositionsAttacked(gridSize);
             PlaceShipsRandomly(gridSize);
         }
@@ -207,7 +227,7 @@ namespace Gsd311.Week6.Group2
             }
         }
 
-       
+
         private void PlaceShipsRandomly(int gridSize)
         {
             var availableRows = new List<int>();
