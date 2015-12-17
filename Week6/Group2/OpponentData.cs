@@ -59,39 +59,41 @@ namespace Gsd311.Week6.Group2
         /// <param name="position">A position which was a hit on a ship.</param>
         private void ProcessHitPosition(Position position)
         {
-            Position temp = new Position(0, 0);
+            Position temp1 = new Position(0, 0);
+            Position temp2 = new Position(0, 0);
+            Position temp3 = new Position(0, 0);
+            Position temp4 = new Position(0, 0);
+
 
             if (((position.X + 1) >= 0) && ((position.X + 1) < gridSize) && ((position.Y) >= 0) && ((position.Y) < gridSize))
             {
-                temp.X = position.X + 1;
-                temp.Y = position.Y;
-                positionsToAttack.Push(temp);
+                temp1.X = position.X + 1;
+                temp1.Y = position.Y;
+                positionsToAttack.Push(temp1);
 
             }
 
             if (((position.X - 1) >= 0) && ((position.X - 1) < gridSize) && ((position.Y) >= 0) && ((position.Y) < gridSize))
             {
-                temp.X = position.X - 1;
-                temp.Y = position.Y;
-                positionsToAttack.Push(temp);
+                temp2.X = position.X - 1;
+                temp2.Y = position.Y;
+                positionsToAttack.Push(temp2);
 
             }
 
             if (((position.X) >= 0) && ((position.X) < gridSize) && ((position.Y + 1) >= 0) && ((position.Y + 1) < gridSize))
             {
-                temp.X = position.X;
-                temp.Y = position.Y + 1;
-                positionsToAttack.Push(temp);
-
+                temp3.X = position.X;
+                temp3.Y = position.Y + 1;
+                positionsToAttack.Push(temp3);
             }
 
             if (((position.X) >= 0) && ((position.X) < gridSize) && ((position.Y - 1) >= 0) && ((position.Y - 1) < gridSize))
             {
-                temp.X = position.X;
-                temp.Y = position.Y - 1;
-                positionsToAttack.Push(temp);
-
-            }
+                temp4.X = position.X;
+                temp4.Y = position.Y - 1;
+                positionsToAttack.Push(temp4);
+             }
 
         }
 

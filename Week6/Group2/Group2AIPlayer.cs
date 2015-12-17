@@ -69,7 +69,7 @@ namespace Gsd311.Week6.Group2
                 {
                     result = NextHuntPosition();
                 }
-                valid = CheckFriendly(result);
+                valid = CheckFriendly(result) && !positionsAttacked[result.X, result.Y].Hit;
                 if (!valid && NothingLeftToAttackButOwnShips())
                 {
                     //Attacking any unattacked positions would result in attacking our own ships, attack previously attacked Ship Hit position instead
@@ -157,8 +157,7 @@ namespace Gsd311.Week6.Group2
         {
             foreach (var opponent in opponentData.Values)
             {
-                if(opponent.NextAttackPosition(ref toAttack) && !opponent.IsEliminated() &&
-                    !positionsAttacked[toAttack.X, toAttack.Y].Hit)
+                if(opponent.NextAttackPosition(ref toAttack) && !opponent.IsEliminated())
                 {
                     return true;
                 }
